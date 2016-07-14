@@ -1,6 +1,6 @@
 # ============================
 # Tutorial - TF 
-# (Logistics Regression)
+# (Check the load of dataset)
 # -----------------------------
 # Copyright @ dianaborsa
 # =============================
@@ -15,8 +15,11 @@ def main():
 	trainX, trainY, testX, testY = mnist.train.images, mnist.train.labels, mnist.test.images, mnist.test.labels
 	print trainX.shape
 	print trainY.shape
-	print trainY[0]
+	
+	print 'Image (X): '
 	plt.imshow(np.reshape(trainX[0,:],(28,28)))
+	print 'Raw Y:' + str(trainY[0])
+	print 'Label:' + str(np.argmax(trainY[0]))
 
 if __name__ == '__main__':
 	main()
