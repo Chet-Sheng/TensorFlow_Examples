@@ -179,7 +179,7 @@ def main():
 		print('CHECK: Accuracy of saved model')
 		acc_train = sess.run(accuracy, feed_dict={X:trainX, Y:trainY})
 		acc_test  = sess.run(accuracy, feed_dict={X:testX,  Y:testY})
-		print('Accuracy: %.5f(training) %.5f(testing)' %(acc_train, acc_test))
+		print('Accuracy: %.5f(training) %.5f(testing) \n' %(acc_train, acc_test))
 
 		# save model
 		saveModel(sess, MODEL_FILENAME)
@@ -201,7 +201,7 @@ def main():
 		print('CHECK: After loading save model')
 		acc_train = sess.run(accuracy, feed_dict={X:trainX, Y:trainY})
 		acc_test  = sess.run(accuracy, feed_dict={X:testX,  Y:testY})
-		print('Accuracy: %.5f(training) %.5f(testing)' %(acc_train, acc_test))
+		print('Accuracy: %.5f(training) %.5f(testing) \n' %(acc_train, acc_test))
 
 
 if __name__ == '__main__':
