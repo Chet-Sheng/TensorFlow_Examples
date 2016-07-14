@@ -13,11 +13,14 @@ import numpy as np
 import tensorflow as tf
 import input_data
 import matplotlib.pyplot as plt
+import os.path
 
 BATCH_SIZE     = 32
-MAX_ITERS      = 10
+MAX_ITERS      = 100
 LEARNING_RATE  = 0.01
-MODEL_FILENAME = "nn_model.ckpt" 
+
+MODEL_FOLDER   = "saved_models/"
+MODEL_FILENAME = MODEL_FOLDER+"nn_model.ckpt" 
 
 # --------------------------------------------------------------------
 # Helper fct: Build linear layer + w/ or w/o bias compoment
@@ -91,7 +94,7 @@ def trainModel(sess, accuracy, train_op, X, Y, trainX, trainY, testX, testY):
 				sess.run(train_op, feed_dict={X: trainX[startIndex:endIndex], Y: trainY[startIndex:endIndex]})
 
 			# Visualize accuracy only every 10 iterations
-			if indexIter%1==0 :
+			if indexIter%10==0 :
 				
 				acc_train = sess.run(accuracy, feed_dict={X:trainX, Y:trainY})
 				acc_test  = sess.run(accuracy, feed_dict={X:testX,  Y:testY})
@@ -107,6 +110,10 @@ def trainModel(sess, accuracy, train_op, X, Y, trainX, trainY, testX, testY):
 
 def saveModel(sess, MODEL_FILENAME):
 
+	if not os.path.exists(MODEL_FOLDER):
+		print 'Creating path where to save model: ' + MODEL_FOLDER
+		os.mkdir(MODEL_FOLDER)
+
 	print('Saving model at: '+MODEL_FILENAME)
 	saver = tf.train.Saver()
 	saver.save(sess, MODEL_FILENAME)
@@ -115,10 +122,15 @@ def saveModel(sess, MODEL_FILENAME):
 
 def loadModel(sess, MODEL_FILENAME):
 
-	print('Loading save model from: '+MODEL_FILENAME)
-	saver = tf.train.Saver()
-	saver.restore(sess, MODEL_FILENAME)
-	print('Model succesfully loaded.\n')
+	if os.path.exists(MODEL_FILENAME):
+		print('Loading save model from: '+MODEL_FILENAME)
+		saver = tf.train.Saver()
+		saver.restore(sess, MODEL_FILENAME)
+		print('Model succesfully loaded.\n')
+		return True
+	else:
+		print('Model file <<'+MODEL_FILENAME+'>> does not exists!')
+		return False
 
 
 def main():
@@ -195,13 +207,15 @@ def main():
 		tf.initialize_all_variables().run()
 
 		# load model
-		loadModel(sess, MODEL_FILENAME)
+		if loadModel(sess, MODEL_FILENAME):
 
-		# check model
-		print('CHECK: After loading save model')
-		acc_train = sess.run(accuracy, feed_dict={X:trainX, Y:trainY})
-		acc_test  = sess.run(accuracy, feed_dict={X:testX,  Y:testY})
-		print('Accuracy: %.5f(training) %.5f(testing) \n' %(acc_train, acc_test))
+			# model succesfully loaded
+
+			# check model
+			print('CHECK: After loading save model')
+			acc_train = sess.run(accuracy, feed_dict={X:trainX, Y:trainY})
+			acc_test  = sess.run(accuracy, feed_dict={X:testX,  Y:testY})
+			print('Accuracy: %.5f(training) %.5f(testing) \n' %(acc_train, acc_test))
 
 
 if __name__ == '__main__':
